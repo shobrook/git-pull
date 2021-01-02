@@ -16,7 +16,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 # Local Modules
 from exceptions import DeniedRequest
 
-resources_dir = os.path.abspath("./resources")
+PATH_TO_RESOURCES = os.path.abspath("resources")
 
 CHROME_OPTIONS = Options()
 # CHROME_OPTIONS.add_argument("--disable-extensions")
@@ -24,10 +24,22 @@ CHROME_OPTIONS = Options()
 # CHROME_OPTIONS.add_argument("--no-sandbox") # Linux only
 CHROME_OPTIONS.add_argument("--headless")
 
-LANGUAGES = load(open(f"{resources_dir}/languages.yml", 'r'), Loader=Loader).items()
-VENDOR_PATTERNS = load(open(f"{resources_dir}/vendor.yml", 'r'), Loader=Loader)
-DOC_PATTERNS = load(open(f"{resources_dir}/documentation.yml", 'r'), Loader=Loader)["Files"]
-USER_AGENTS = list(load(open(f"{resources_dir}/useragents.yml", 'r'), Loader=Loader))
+LANGUAGES = load(
+    open(os.path.join(PATH_TO_RESOURCES, "languages.yml"), "r"),
+    Loader=Loader
+).items()
+VENDOR_PATTERNS = load(
+    open(os.path.join(PATH_TO_RESOURCES, "vendor.yml"), "r"),
+    Loader=Loader
+)
+DOC_PATTERNS = load(
+    open(os.path.join(PATH_TO_RESOURCES, "documentation.yml"), "r"),
+    Loader=Loader
+)["Files"]
+USER_AGENTS = list(load(
+    open(os.path.join(PATH_TO_RESOURCES, "useragents.yml"), "r"),
+    Loader=Loader
+))
 
 
 def get_parse_tree(url):
@@ -148,7 +160,7 @@ def fetch_file_paths(repo_name, owner):
 
     # driver = webdriver.Remote(SERVICE.service_url, OPTIONS) # Linux only
     driver = webdriver.Chrome(
-        executable_path=os.path.abspath("chromedriver"),
+        executable_path=os.path.join(PATH_TO_RESOURCES, "chromedriver"),
         chrome_options=CHROME_OPTIONS
     ) # OS X only
     driver.get(f"https://github.com/{owner}/{repo_name}/find/master")
