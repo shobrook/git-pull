@@ -1,0 +1,360 @@
+# Defines some of the most popular programming languages on Github.
+#
+# The `extensions` attribute is an array of file extensions associated with the
+# language (the first one is considered the primary extension).
+# The `filenames` attribute is an array of filenames commonly associated with the
+# language.
+
+ActionScript:
+  extensions:
+  - ".as"
+
+Assembly:
+  extensions:
+  - ".asm"
+  - ".a51"
+  - ".inc"
+  - ".nasm"
+
+C:
+  extensions:
+  - ".c"
+  - ".cats"
+  - ".h"
+  - ".idc"
+
+C++:
+  extensions:
+  - ".cpp"
+  - ".c++"
+  - ".cc"
+  - ".cp"
+  - ".cxx"
+  - ".h"
+  - ".h++"
+  - ".hh"
+  - ".hpp"
+  - ".hxx"
+  - ".inc"
+  - ".inl"
+  - ".ino"
+  - ".ipp"
+  - ".re"
+  - ".tcc"
+  - ".tpp"
+
+CSS:
+  extensions:
+  - ".css"
+  - ".less" # Less
+  - ".pcss" # PostCSS
+  - ".scss" # Sass
+  - ".sass" # Sass
+  - ".styl" # Stylus
+  - ".sss" # SugarSS
+
+Clojure:
+  extensions:
+  - ".clj"
+  - ".boot"
+  - ".cl2"
+  - ".cljc"
+  - ".cljs"
+  - ".cljs.hl"
+  - ".cljscm"
+  - ".cljx"
+  - ".hic"
+  filenames:
+  - riemann.config
+
+CoffeeScript:
+  extensions:
+  - ".coffee"
+  - "._coffee"
+  - ".cake"
+  - ".cjsx"
+  - ".iced"
+  filenames:
+  - Cakefile
+
+Go:
+  extensions:
+  - ".go"
+
+HTML:
+  extensions:
+  - ".html"
+  - ".htm"
+  - ".html.hl"
+  - ".inc"
+  - ".st"
+  - ".xht"
+  - ".xhtml"
+
+Haskell:
+  extensions:
+  - ".hs"
+  - ".hsc"
+
+Java:
+  extensions:
+  - ".java"
+
+JavaScript:
+  extensions:
+  - ".js"
+  - "._js"
+  - ".bones"
+  - ".es"
+  - ".es6"
+  - ".frag"
+  - ".gs"
+  - ".jake"
+  - ".jsb"
+  - ".jscad"
+  - ".jsfl"
+  - ".jsm"
+  - ".jss"
+  - ".mjs"
+  - ".njs"
+  - ".pac"
+  - ".sjs"
+  - ".ssjs"
+  - ".xsjs"
+  - ".xsjslib"
+  filenames:
+  - Jakefile
+
+Lua:
+  extensions:
+  - ".lua"
+  - ".fcgi"
+  - ".nse"
+  - ".p8"
+  - ".pd_lua"
+  - ".rbxs"
+  - ".wlua"
+
+Matlab:
+  extensions:
+  - ".matlab"
+  - ".m"
+
+Objective-C:
+  extensions:
+  - ".m"
+  - ".h"
+
+Objective-C++:
+  extensions:
+  - ".mm"
+
+PHP:
+  extensions:
+  - ".php"
+  - ".aw"
+  - ".ctp"
+  - ".fcgi"
+  - ".inc"
+  - ".php3"
+  - ".php4"
+  - ".php5"
+  - ".phps"
+  - ".phpt"
+  filenames:
+  - ".php"
+  - ".php_cs"
+  - ".php_cs.dist"
+  - Phakefile
+
+Perl:
+  extensions:
+  - ".pl"
+  - ".al"
+  - ".cgi"
+  - ".fcgi"
+  - ".perl"
+  - ".ph"
+  - ".plx"
+  - ".pm"
+  - ".psgi"
+  - ".t"
+  filenames:
+  - Makefile.PL
+  - Rexfile
+  - ack
+  - cpanfile
+
+Python:
+  extensions:
+  - ".py"
+  - ".bzl"
+  - ".cgi"
+  - ".fcgi"
+  - ".gyp"
+  - ".gypi"
+  - ".lmi"
+  - ".py3"
+  - ".pyde"
+  - ".pyi"
+  - ".pyp"
+  - ".pyt"
+  - ".pyw"
+  - ".rpy"
+  - ".spec"
+  - ".tac"
+  - ".wsgi"
+  - ".xpy"
+  filenames:
+  - ".gclient"
+  - BUCK
+  - BUILD
+  - BUILD.bazel
+  - SConscript
+  - SConstruct
+  - Snakefile
+  - WORKSPACE
+  - wscript
+
+R:
+  extensions:
+  - ".r"
+  - ".rd"
+  - ".rsx"
+  filenames:
+  - ".Rprofile"
+  - expr-dist
+
+Ruby:
+  extensions:
+  - ".rb"
+  - ".builder"
+  - ".eye"
+  - ".fcgi"
+  - ".gemspec"
+  - ".god"
+  - ".jbuilder"
+  - ".mspec"
+  - ".pluginspec"
+  - ".podspec"
+  - ".rabl"
+  - ".rake"
+  - ".rbuild"
+  - ".rbw"
+  - ".rbx"
+  - ".ru"
+  - ".ruby"
+  - ".spec"
+  - ".thor"
+  - ".watchr"
+  filenames:
+  - ".irbrc"
+  - ".pryrc"
+  - Appraisals
+  - Berksfile
+  - Brewfile
+  - Buildfile
+  - Capfile
+  - Dangerfile
+  - Deliverfile
+  - Fastfile
+  - Gemfile
+  - Gemfile.lock
+  - Guardfile
+  - Jarfile
+  - Mavenfile
+  - Podfile
+  - Puppetfile
+  - Rakefile
+  - Snapfile
+  - Thorfile
+  - Vagrantfile
+  - buildfile
+
+Rust:
+  extensions:
+  - ".rs"
+  - ".rs.in"
+
+Scala:
+  extensions:
+  - ".scala"
+  - ".kojo"
+  - ".sbt"
+  - ".sc"
+
+Shell:
+  extensions:
+  - ".sh"
+  - ".bash"
+  - ".bats"
+  - ".cgi"
+  - ".command"
+  - ".fcgi"
+  - ".ksh"
+  - ".sh.in"
+  - ".tmux"
+  - ".tool"
+  - ".zsh"
+  filenames:
+  - ".bash_history"
+  - ".bash_logout"
+  - ".bash_profile"
+  - ".bashrc"
+  - ".cshrc"
+  - ".login"
+  - ".profile"
+  - ".zlogin"
+  - ".zlogout"
+  - ".zprofile"
+  - ".zshenv"
+  - ".zshrc"
+  - 9fs
+  - PKGBUILD
+  - bash_logout
+  - bash_profile
+  - bashrc
+  - cshrc
+  - gradlew
+  - login
+  - man
+  - profile
+  - zlogin
+  - zlogout
+  - zprofile
+  - zshenv
+  - zshrc
+
+Swift:
+  extensions:
+  - ".swift"
+
+# TeX:
+#   extensions:
+#   - ".tex"
+#   - ".aux"
+#   - ".bbx"
+#   - ".bib"
+#   - ".cbx"
+#   - ".cls"
+#   - ".dtx"
+#   - ".ins"
+#   - ".lbx"
+#   - ".ltx"
+#   - ".mkii"
+#   - ".mkiv"
+#   - ".mkvi"
+#   - ".sty"
+#   - ".toc"
+
+Vim Script:
+  extensions:
+  - ".vim"
+  filenames:
+  - ".gvimrc"
+  - ".nvimrc"
+  - ".vimrc"
+  - _vimrc
+  - gvimrc
+  - nvimrc
+  - vimrc

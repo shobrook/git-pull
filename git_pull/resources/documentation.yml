@@ -1,0 +1,18 @@
+Directories:
+  - ^[Dd]ocs?/
+  - (^|/)[Dd]ocumentation/
+  - (^|/)[Jj]avadoc/
+  - ^[Mm]an/
+  - ^[Ee]xamples/
+  - ^[Dd]emos?/
+  - (^|/)inst/doc/
+
+Files:
+  - (^|/)CHANGE(S|LOG)?(\.|$)
+  - (^|/)CONTRIBUTING(\.|$)
+  - (^|/)COPYING(\.|$)
+  - (^|/)INSTALL(\.|$)
+  - (^|/)LICEN[CS]E(\.|$)
+  - (^|/)[Ll]icen[cs]e(\.|$)
+  - (^|/)README(\.|$)
+  - (^|/)[Rr]eadme(\.|$)
