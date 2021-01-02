@@ -1,18 +1,7 @@
 # Standard Library
-import re
-import os
-import random
 import urllib.parse
-from multiprocessing.dummy import Pool as ThreadPool
 from collections import defaultdict
 from datetime import datetime
-
-# Third Party
-import yaml
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.support.ui import WebDriverWait
 
 # Local Modules
 import utilities as utils
