@@ -6,8 +6,7 @@
 from git_pull import GithubProfile
 
 gh = GithubProfile("shobrook")
-gh.scrape_follower_count()
->>> 168
+gh.scrape_follower_count() # >>> 168
 ```
 
 Note that `git-pull` is _not_ a perfect replacement for the Github API. There's some stuff, like a repo's commit history or # of releases, that it can't scrape (yet).
@@ -29,7 +28,7 @@ $ pip install git-pull
 This is the master object for scraping data from a Github profile. All it requires is the username of the Github user, and from there you can scrape social info for that user and their repos. It has the following parameters:
 
 * `username` _(str)_: Github user's username/handle
-* `num_threads` _(int, optional (default=-1))_: Number of threads to allocate for splitting up the work for scraping files in repos; if `-1`, multithreading is disabled
+* `num_threads` _(int, optional (default=1))_: Number of threads to allocate for splitting up the work for scraping files in repos
 * `scrape_everything` _(bool, optional (default=False))_: If `True`, scrapes all social info and repo data for the user (i.e. it calls all of the scraper methods listed below and stores their results in properties of the model); if `False`, you have to call individual scraper methods to get the data you want
 
 Once the object is initialized, you can call individual scraper methods to get the data you want:
@@ -52,21 +51,16 @@ from git_pull import GithubProfile
 # If scrape_everything=True, then all scraped data is stored in the object
 # properties
 gh = GithubProfile("shobrook", scrape_everything=True)
-gh.name
->>> "Jonathan Shobrook"
-gh.avatar
->>> "https://avatars1.githubusercontent.com/u/18684735?s=460&u=60f797085eb69d8bba4aba80078ad29bce78551a&v=4"
-gh.repos
->>> [Repo("git-pull"), Repo("saplings"), ...]
+gh.name # >>> "Jonathan Shobrook"
+gh.avatar # >>> "https://avatars1.githubusercontent.com/u/18684735?s=460&u=60f797085eb69d8bba4aba80078ad29bce78551a&v=4"
+gh.repos # >>> [Repo("git-pull"), Repo("saplings"), ...]
 
 # If scrape_everything=False, individual scraper methods have to be called
 # before accessing data from the properties
 gh = GithubProfile("shobrook", scrape_everything=False)
-gh.name
->>> ''
-gh.scrape_name()
-gh.name
->>> "Jonathan Shobrook"
+gh.name # >>> ''
+gh.scrape_name() # >>> "Jonathan Shobrook"
+gh.name # >>> "Jonathan Shobrook"
 ```
 
 ### `Repo(name, owner, num_threads=-1, scrape_everything=False)`
@@ -75,7 +69,7 @@ Use this object for scraping data from a Github repo. It have the following para
 
 * `name` _(str)_: Name of the repo to be scraped
 * `owner` _(str)_: Username of the owner of the repo
-* `num_threads` _(int, (optional, default=-1))_: Number of threads to allocate for splitting up the work for scraping files; if `-1`, multithreading is disabled
+* `num_threads` _(int, (optional, default=1))_: Number of threads to allocate for splitting up the work for scraping files
 * `scrape_everything` _(bool, (optional, default=False))_: If `True`, scrapes all metadata for the repo and scrapes files; if `False`, you have to call individual scraper methods to get the data you want
 
 Once the object is initialized, you can call individual scraper methods to get the data you want:
