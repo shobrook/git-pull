@@ -2,71 +2,11 @@
 import urllib.parse
 from collections import defaultdict
 from datetime import datetime
+from functools import partial
 
 # Local Modules
 import utilities as utils
 from exceptions import InvalidUsernameError
-
-
-# def scrape_commit_history(repo, owner):
-#     return [] # TEMP
-#
-#     def process_commit_list(url):
-#         tree = get_parse_tree(url)
-#
-#         authors, committers = [], []
-#         messages, dates = [], []
-#         for commit_container in tree.find_all("li", "commit commits-list-item js-commits-list-item table-list-item js-navigation-item js-details-container Details js-socket-channel js-updatable-content"):
-#             author_labels = commit_container.find_all('a', "commit-author tooltipped tooltipped-s user-mention")
-#
-#             if not author_labels:
-#                 continue
-#
-#             authors.append(clean_username(author_labels[0].get_text()))
-#             if len(author_labels) > 1:
-#                 committers.append(clean_username(author_labels[1].get_text()))
-#             else:
-#                 committers.append('')
-#
-#             messages.append(commit_container.find_all('a', "message js-navigation-open")[0].get_text())
-#             dates.append(commit_container.find("relative-time")["datetime"])
-#
-#         for author, committer, message, date in zip(authors, committers, messages, dates):
-#             yield Commit(
-#                 author=author,
-#                 committer=committer,
-#                 message=message,
-#                 date=date
-#             )
-#
-#     url = '/'.join(["https://github.com", owner, repo, "commits/master"])
-#     yield from process_commit_list(url)
-#
-#     # Scrapes commits from each page until last page
-#     if len(tree.find_all("span", "disabled")) != 2:
-#         pagination = tree.find("div", "pagination")
-#         while not any(disabled.get_text() == "Older" for disabled in pagination.find_all("span", "disabled")):
-#             # Loads the next page of commits
-#             url = pagination.find_all('a')[-1]["href"]
-#             yield from process_commit_list(url)
-#
-#             pagination = tree.find("div", "pagination")
-
-
-class Commit(object):
-    def __init__(self, author, committer, message, date):
-        self.author, self.committer = author, committer # Author, Non-author committer
-        self.message, self.date = message, date
-
-    ## Public Methods ##
-
-    def to_dict(self):
-        return {
-            "author": self.author,
-            "committer": self.committer,
-            "message": self.message,
-            "date": self.date
-        }
 
 
 class File(object):
@@ -74,7 +14,7 @@ class File(object):
         self.path, self.type = path, type
         self.owner, self.repo = owner, repo
         self.raw_url = f"https://raw.githubusercontent.com/{owner}/{repo}/master/{urllib.parse.quote(path.encode('utf-8'))}"
-        self.blames = []
+        self.blames = {}
 
         if scrape_everything:
             self.blames = self.scrape_blames()
@@ -88,7 +28,6 @@ class File(object):
             line_nums = [int(ln.get_text()) for ln in section.find_all("div", "blob-num blame-blob-num bg-gray-light js-line-number")]
             author_label = section.find("div", "AvatarStack-body")["aria-label"]
 
-            # TODO: Replace all this split bullshit with RegEx
             split_author_label = author_label.split(" and ")
             if len(split_author_label) > 1: # Duet commit (pair programmers)
                 author = split_author_label[0]
@@ -114,12 +53,12 @@ class File(object):
 
 
 class Repo(object):
-    def __init__(self, name, owner, scrape_everything=False):
+    def __init__(self, name, owner, threads=-1, scrape_everything=False):
         self.name, self.owner = name, owner
+        self._threads = threads
         self._tree = utils.get_parse_tree(f"https://github.com/{owner}/{name}")
 
         self.files = set()
-        self.commits = []
         self.topics = None
         self.star_count = None
         self.fork_count = None
@@ -127,21 +66,27 @@ class Repo(object):
 
         if scrape_everything:
             self.scrape_files(scrape_everything)
-            self.scrape_commit_history()
             self.scrape_topics()
             self.scrape_star_count()
             self.scrape_fork_count()
             self.scrape_fork_status()
 
     def scrape_files(self, scrape_everything=False):
-        # TODO: Parallelize
-        for file_type, file_path in utils.fetch_file_paths(self.name, self.owner):
-            file = self.scrape_file(file_path, file_type, scrape_everything)
-            self.files.add(file)
+        if self._threads > 0:
+            files = utils.concurrent_exec(
+                partial(self.scrape_file, scrape_everything=scrape_everything),
+                utils.fetch_file_paths(self.name, self.owner),
+                self._threads
+            )
+            self.files |= set(files)
+        else:
+            for file_type, file_path in utils.fetch_file_paths(self.name, self.owner):
+                file = self.scrape_file(file_path, file_type, scrape_everything)
+                self.files.add(file)
 
         return self.files
 
-    def scrape_file(self, file_path, file_type=None, scrape_everything=False):
+    def scrape_file(self, file_type, file_path, scrape_everything=False):
         return File(
             file_path,
             file_type,
@@ -149,9 +94,6 @@ class Repo(object):
             self.name,
             scrape_everything
         )
-
-    def scrape_commit_history(self):
-        pass
 
     # @utils.safe_scrape
     # def scrape_maintenance_data(self):
@@ -205,7 +147,6 @@ class Repo(object):
             "name": self.name,
             "owner": self.owner,
             "files": [file.to_dict() for file in self.files],
-            "commits": [commit.to_dict() for commit in self.commits],
             "topics": self.topics,
             "star_count": self.star_count,
             "fork_count": self.fork_count,
@@ -218,8 +159,9 @@ class Repo(object):
 
 
 class GithubProfile(object):
-    def __init__(self, username, scrape_everything=False):
+    def __init__(self, username, threads=-1, scrape_everything=False):
         self.username = username
+        self._threads = threads
         self._tree = utils.get_parse_tree(f"https://github.com/{username}")
 
         if not self._tree.find_all("div", "js-yearly-contributions"):
@@ -308,8 +250,10 @@ class GithubProfile(object):
             repo = GithubProfile.scrape_repo(repo_name, scrape_everything)
             self.repos.add(repo)
 
+        return self.repos
+
     def scrape_repo(self, repo_name, scrape_everything=False):
-        return Repo(repo_name, self.username, scrape_everything)
+        return Repo(repo_name, self.username, self._threads, scrape_everything)
 
     ## Misc. ##
 
@@ -324,19 +268,3 @@ class GithubProfile(object):
             "workplace": self.workplace,
             "repos": [repo.to_dict() for repo in self.repos]
         }
-
-from pprint import pprint
-
-gh = GithubProfile("shobrook")
-# gh.scrape_name()
-# gh.scrape_avatar()
-# gh.scrape_follower_count()
-# gh.scrape_contribution_graph()
-# gh.scrape_location()
-# gh.scrape_personal_site()
-# gh.scrape_workplace()
-
-# pprint(gh.to_dict())
-
-repo = gh.scrape_repo("rebound", True)
-pprint(repo.to_dict())

@@ -6,7 +6,7 @@ from multiprocessing.dummy import Pool as ThreadPool
 
 # Third Party
 import requests
-import yaml
+from yaml import load, Loader
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -16,7 +16,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 # Local Modules
 from exceptions import DeniedRequest
 
-
 resources_dir = os.path.abspath("./resources")
 
 CHROME_OPTIONS = Options()
@@ -25,10 +24,10 @@ CHROME_OPTIONS = Options()
 # CHROME_OPTIONS.add_argument("--no-sandbox") # Linux only
 CHROME_OPTIONS.add_argument("--headless")
 
-LANGUAGES = yaml.load(open(f"{resources_dir}/languages.yml", 'r')).items()
-VENDOR_PATTERNS = yaml.load(open(f"{resources_dir}/vendor.yml", 'r'))
-DOC_PATTERNS = yaml.load(open(f"{resources_dir}/documentation.yml", 'r'))["Files"]
-USER_AGENTS = list(yaml.load(open(f"{resources_dir}/useragents.yml", 'r')))
+LANGUAGES = load(open(f"{resources_dir}/languages.yml", 'r'), Loader=Loader).items()
+VENDOR_PATTERNS = load(open(f"{resources_dir}/vendor.yml", 'r'), Loader=Loader)
+DOC_PATTERNS = load(open(f"{resources_dir}/documentation.yml", 'r'), Loader=Loader)["Files"]
+USER_AGENTS = list(load(open(f"{resources_dir}/useragents.yml", 'r'), Loader=Loader))
 
 
 def get_parse_tree(url):
@@ -91,7 +90,7 @@ def scrape_personal_info(parse_tree, tag, id, callback=None):
     return callback(target)
 
 
-def concurrent_exec(func, iterable, num_threads=8):
+def concurrent_exec(func, iterable, num_threads):
     """
     Executes a function on a list of inputs in parallel by dividing the work
     among multiple threads.
@@ -101,7 +100,7 @@ def concurrent_exec(func, iterable, num_threads=8):
     func : ...
         function to execute
     iterable : list
-        list of inputs to map the function to
+        list of arguments to map the function to
     num_threads : int
         number of threads to allocate
 
@@ -110,8 +109,8 @@ def concurrent_exec(func, iterable, num_threads=8):
     iterator of function outputs corresponding to each input
     """
 
-    pool = ThreadPool(thread_count)
-    map_of_items = pool.map(func, iterable)
+    pool = ThreadPool(num_threads)
+    map_of_items = pool.starmap(func, iterable)
     pool.close()
     pool.join()
 
