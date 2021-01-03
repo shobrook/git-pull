@@ -122,7 +122,7 @@ def concurrent_exec(func, iterable, num_threads):
     """
 
     pool = ThreadPool(num_threads)
-    map_of_items = pool.starmap(func, iterable)
+    map_of_items = pool.map(func, iterable)
     pool.close()
     pool.join()
 
@@ -155,6 +155,18 @@ def fetch_repo_names(owner):
             yield from process_repo_list(tree)
 
 
+def identify_file_type(file_path):
+    for language, attrs in LANGUAGES:
+        if file_path.lower().endswith(tuple(attrs["extensions"])):
+            return language
+
+    for doc_pattern in DOC_PATTERNS:
+        if re.search(doc_pattern, file_path):
+            return "Documentation"
+
+    return ""
+
+
 def fetch_file_paths(repo_name, owner):
     # TODO: Find a way to force dynamic content to load without using Selenium
 
@@ -185,13 +197,13 @@ def fetch_file_paths(repo_name, owner):
 
                 if not is_vendor_code:
                     is_code = True
-                    file_paths.append((language, path))
+                    file_paths.append(path)
                     break
 
         if not is_code:
             for doc_pattern in DOC_PATTERNS:
                 if re.search(doc_pattern, path):
-                    file_paths.append(("Documentation", path))
+                    file_paths.append(path)
                     break
 
     driver.close()
