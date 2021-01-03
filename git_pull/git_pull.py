@@ -6,8 +6,8 @@ from functools import partial
 from multiprocessing import cpu_count
 
 # Local Modules
-import utilities as utils
-from exceptions import InvalidUsernameError
+import git_pull.utilities as utils
+from git_pull.exceptions import InvalidUsernameError
 
 
 class File(object):

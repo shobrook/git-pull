@@ -14,7 +14,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 
 # Local Modules
-from exceptions import DeniedRequest
+from git_pull.exceptions import DeniedRequest
 
 PATH_TO_RESOURCES = os.path.abspath("resources")
 
