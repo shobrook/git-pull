@@ -16,7 +16,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 # Local Modules
 from git_pull.exceptions import DeniedRequest
 
-PATH_TO_RESOURCES = os.path.abspath("resources")
+PATH_TO_RESOURCES = os.path.join(os.path.dirname(__file__), "resources")
 
 CHROME_OPTIONS = Options()
 # CHROME_OPTIONS.add_argument("--disable-extensions")
