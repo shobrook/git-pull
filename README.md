@@ -78,7 +78,7 @@ Use this object for scraping data from a Github repo.
 
 **Methods:**
 
-* **`scrape_topics() -> list`:** Returns list of topics/tags for the repo
+* **`scrape_topics() -> list`:** Returns list of topics for the repo
 * **`scrape_star_count() -> int`:** Returns number of stars the repo has
 * **`scrape_fork_count() -> int`:** Returns number of times the repo has been forked
 * **`scrape_fork_status() -> bool`:** Returns whether or not the repo is a fork of another one
