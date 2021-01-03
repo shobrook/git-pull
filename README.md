@@ -23,7 +23,7 @@ $ pip install git-pull
 
 **git-pull** provides three objects –– `GithubProfile`, `Repo`, and `File` –– each with methods for scraping data. Below are descriptions and usage examples for each object.
 
-#### `GithubProfile(username, num_threads=1, scrape_everything=False)`
+#### `GithubProfile(username, num_threads=multiprocessing.cpu_count(), scrape_everything=False)`
 
 This is the master object for scraping data from a Github profile. All it requires is the username of the Github user, and from there you can scrape social info for that user and their repos.
 
@@ -65,7 +65,7 @@ gh.scrape_name() # >>> "Jonathan Shobrook"
 gh.name # >>> "Jonathan Shobrook"
 ```
 
-#### `Repo(name, owner, num_threads=1, scrape_everything=False)`
+#### `Repo(name, owner, num_threads=multiprocessing.cpu_count(), scrape_everything=False)`
 
 Use this object for scraping data from a Github repo.
 
