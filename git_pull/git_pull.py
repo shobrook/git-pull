@@ -3,6 +3,7 @@ import urllib.parse
 from collections import defaultdict
 from datetime import datetime
 from functools import partial
+from multiprocessing import cpu_count
 
 # Local Modules
 import utilities as utils
@@ -10,9 +11,10 @@ from exceptions import InvalidUsernameError
 
 
 class File(object):
-    def __init__(self, path, type, owner, repo, scrape_everything=False):
-        self.path, self.type = path, type
-        self.owner, self.repo = owner, repo
+    def __init__(self, path, repo, owner, scrape_everything=False):
+        self.path = path
+        self.type = utils.identify_file_type(path)
+        self.repo, self.owner = repo, owner
         self.raw_url = f"https://raw.githubusercontent.com/{owner}/{repo}/master/{urllib.parse.quote(path.encode('utf-8'))}"
         self.blames = {}
 
@@ -38,24 +40,24 @@ class File(object):
             else: # Solo commit
                 author_to_line_nums[author_label]["line_nums"] |= set(line_nums)
 
-        self.blames = author_to_line_nums
+        self.blames = dict(author_to_line_nums)
         return self.blames
 
     def to_dict(self):
         return {
             "path": self.path,
             "type": self.type,
-            "owner": self.owner,
-            "repo": self.repo,
+            # "owner": self.owner,
+            # "repo": self.repo,
             "raw_url": self.raw_url,
             "blames": self.blames
         }
 
 
 class Repo(object):
-    def __init__(self, name, owner, threads=-1, scrape_everything=False):
+    def __init__(self, name, owner, num_threads=cpu_count(), scrape_everything=False):
         self.name, self.owner = name, owner
-        self._threads = threads
+        self._threads = num_threads
         self._tree = utils.get_parse_tree(f"https://github.com/{owner}/{name}")
 
         self.files = set()
@@ -80,18 +82,17 @@ class Repo(object):
             )
             self.files |= set(files)
         else:
-            for file_type, file_path in utils.fetch_file_paths(self.name, self.owner):
-                file = self.scrape_file(file_path, file_type, scrape_everything)
+            for file_path in utils.fetch_file_paths(self.name, self.owner):
+                file = self.scrape_file(file_path, scrape_everything)
                 self.files.add(file)
 
         return self.files
 
-    def scrape_file(self, file_type, file_path, scrape_everything=False):
+    def scrape_file(self, file_path, scrape_everything=False):
         return File(
             file_path,
-            file_type,
-            self.owner,
             self.name,
+            self.owner,
             scrape_everything
         )
 
@@ -159,16 +160,16 @@ class Repo(object):
 
 
 class GithubProfile(object):
-    def __init__(self, username, threads=-1, scrape_everything=False):
+    def __init__(self, username, num_threads=cpu_count(), scrape_everything=False):
         self.username = username
-        self._threads = threads
+        self._threads = num_threads
         self._tree = utils.get_parse_tree(f"https://github.com/{username}")
 
         if not self._tree.find_all("div", "js-yearly-contributions"):
             raise InvalidUsernameError(username)
 
         self.name = ''
-        self.avatar_url = ''
+        self.avatar = ''
         self.follower_count = ''
         self.contribution_graph = dict()
         self.location = ''
